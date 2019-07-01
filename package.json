@@ -1,7 +1,7 @@
 {
   "name": "instascript",
   "version": "1.0.0",
-  "description": "Automatizador de instagram feito em NODE",
+  "description": "Automated instagram tool made using NodeJS.",
   "main": "index.js",
   "scripts": {
     "dev": "nodemon index.js"

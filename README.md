@@ -10,5 +10,10 @@
 1. To start the script you need to run 'npm run dev' first.
 Then your localserver with 2500 port will start.
 Send Post request to localhost:2500/session with username, password and target profiles inside an array inside body request Json format.
+Sample:
+{ username: your_username,
+  password: your_password,
+  accounts: [target1, target2, ..., targetN]
+}
 
 ### Enjoy

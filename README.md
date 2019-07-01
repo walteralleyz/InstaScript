@@ -12,8 +12,7 @@ Then your localserver with 2500 port will start.
 Send Post request to localhost:2500/session with username, password and target profiles inside an array inside body request Json format.
 
 2. To send requests to the server node you can download either the Postman application, or the ARC extension for Google Chrome. To start your request, fill in the following form, sending json:
-⋅⋅*
-To http://localhost:2500/followfromusers = { username: your_instagram_username, password: your_instagram_password, accounts: [array_of_accounts] };
+⋅⋅* To http://localhost:2500/followfromusers = { username: your_instagram_username, password: your_instagram_password, accounts: [array_of_accounts] };
 To http://localhost:2500/followfromhashes = { username: your_instagram_username, password: your_instagram_password, accounts: [array_of_tags(without hashtag)] };
 
 ### Enjoy

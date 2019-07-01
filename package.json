@@ -1,0 +1,24 @@
+{
+  "name": "instascript",
+  "version": "1.0.0",
+  "description": "Automatizador de instagram feito em NODE",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon index.js"
+  },
+  "keywords": [
+    "instagram",
+    "javascript",
+    "nodejs"
+  ],
+  "author": "Walter Alleyz",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "dotenv": "^8.0.0",
+    "express": "^4.17.1",
+    "fs": "0.0.1-security",
+    "nodemon": "^1.19.1",
+    "selenium-webdriver": "^4.0.0-alpha.3"
+  }
+}

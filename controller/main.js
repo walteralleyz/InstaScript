@@ -1,28 +1,36 @@
 const {
     builder,
     followTargetFollowers,
-    followHashesFollowers
+    followHashesFollowers,
+    commentHashesPosts
 } = require("../components/constructor");
 
-exports.followFromUsers = async (req, res) => {
-    const {username, password, accounts} = req.body;
-    builder(username, password)
-    .then(
-        async result => {
-            await followTargetFollowers(result, accounts);
-        }
-    );
+let builded = "";
 
-    res.send("Executando!");
-}
-
-exports.followFromHashes = (req, res) => {
-    const {username, password, hashes} = req.body;
+exports.init = (req, res) => {
+    const {username, password} = req.body;
     builder(username, password)
-    .then(
-        async result => {
-            await followHashesFollowers(result, hashes);
+    .then(result => {
+        builded = result;
     });
 
+    res.send("Acessando perfil!")
+};
+
+exports.followFromUsers = async (req, res) => {
+    const { accounts } = req.body;
+    await followTargetFollowers(builded, accounts);
+    res.send("Executando!");
+};
+
+exports.followFromHashes = async (req, res) => {
+    const {hashes} = req.body;
+    await followHashesFollowers(builded, hashes);
+    res.send("Executando!");
+};
+
+exports.commentFromHashes = async (req, res) => {
+    const {hashes, comment} = req.body;
+    await commentHashesPosts(builded, hashes, comment);
     res.send("Executando!");
 };

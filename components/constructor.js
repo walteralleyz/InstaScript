@@ -1,17 +1,19 @@
 const { Builder, until } = require("selenium-webdriver"),
 
-{ builderAccess } = require("../components/access"),
+{
+    getUsersFromAccountFollowers,
+    getUsersFromHashes,
+    getPostsFromHashes
+
+} = require("../components/user"),
 
 {
     readFile,
     writeFile,
-    getUsersFromAccountFollowers,
-    getUsersFromHashes
-
+    builderAccess,
+    follow,
+    accessUserProfile
 } = require("../components/general"),
-
-{ follow, accessUserProfile } = require("../components/user"),
-
 dotenv = require("dotenv").config();
 
 exports.builder = (username, password) => {
@@ -37,9 +39,9 @@ exports.builder = (username, password) => {
 exports.followTargetFollowers = async (builder, accounts) => {
     await builder.wait(until.titleIs(process.env.IG_TITLE), 5000)
     .then(result => {
-        let success_obj = [...accounts].map(async account => {
+        [...accounts].map(async account => {
             try {
-                let getUsers = await getUsersFromAccountFollowers(
+                await getUsersFromAccountFollowers(
                     builder,
                     account,
                     process.env.DB_TXT,
@@ -62,9 +64,9 @@ exports.followTargetFollowers = async (builder, accounts) => {
 exports.followHashesFollowers = async (builder, hashes) => {
     await builder.wait(until.titleIs(process.env.IG_TITLE), 5000)
     .then(result => {
-        let success_obj = [...hashes].map(async hash => {
+        [...hashes].map(async hash => {
             try {
-                let getUsers = await getUsersFromHashes(
+                await getUsersFromHashes(
                     builder,
                     hash,
                     process.env.DB_TXT,
@@ -80,6 +82,23 @@ exports.followHashesFollowers = async (builder, hashes) => {
                 
                 return {[hash]: true};
             } catch(error) { return {[hash]: false} };
+        });
+    });
+};
+
+exports.commentHashesPosts = async (builder, hashes, comment) => {
+    await builder.wait(until.titleIs(process.env.IG_TITLE), 5000)
+    .then(result => {
+        [...hashes].map(async hash => {
+            try {
+                await getPostsFromHashes(
+                    builder,
+                    hash,
+                    comment
+                );
+
+                return { [hash]: true };
+            } catch (error) { return { [hash]: false } };
         });
     });
 };

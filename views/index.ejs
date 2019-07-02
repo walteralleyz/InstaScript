@@ -3,7 +3,7 @@
 <head lang="pt_BR">
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
 	<title>InstaScript</title>
-	<link rel="stylesheet" href="https://unpkg.com/bootstrap-material-design@4.1.1/dist/css/bootstrap-material-design.min.css" />
+	<link rel="stylesheet" href="./css/bootstrap.css" />
 </head>
 <body class="bg-light">
 	<div class="container">
@@ -19,6 +19,7 @@
 								type="text" 
 								class="form-control" 
 								placeholder="Username"
+								autocomplete="username"
 							>
 						</div>
 						<div class="input-group mb-4">
@@ -26,6 +27,7 @@
 								type="password" 
 								class="form-control" 
 								placeholder="Password"
+								autocomplete="current-password"
 							>
 						</div>
 						<div class="button-group" style="text-align: center">
@@ -39,10 +41,10 @@
 				<div id="options-box" style="padding: 20px 20px">
 					<div class="row">
 						<div class="input-group col-lg-12 mb-3">
-							<h6 class="lead text-center mb-4" style="width: 100%">
+							<h6 class="lead font-weight-bold text-center mb-4" style="width: 100%">
 								Select the operation first!
 							</h6>
-							<select class="custom-select">
+							<select class="custom-select" onchange="handleSelectChange(event);">
 								<option selected>SELECT</option>
 								<option value="target">FOLLOW FROM TARGET USER</option>
 								<option value="hash">FOLLOW FROM HASH PAGE</option>
@@ -51,11 +53,17 @@
 						</div>
 					</div>
 					<div class="row">
-						Teste
+						<form 
+							id="choosen-option-box" 
+							style="padding: 20px 20px; width: 100%"
+							onsubmit="holdSubmit(event);"
+						>
+						</form>
 					</div>
 				</div>
 			</div>			
 		</div>
 	</div>
+	<script type="application/javascript" src="./js/main.js"></script>
 </body>
 </html>

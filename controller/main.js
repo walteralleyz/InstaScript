@@ -10,7 +10,6 @@ exports.followFromUsers = async (req, res) => {
     .then(
         async result => {
             await followTargetFollowers(result, accounts);
-            result.quit();
         }
     );
 
@@ -23,7 +22,6 @@ exports.followFromHashes = (req, res) => {
     .then(
         async result => {
             await followHashesFollowers(result, hashes);
-            result.quit();
     });
 
     res.send("Executando!");

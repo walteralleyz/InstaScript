@@ -40,33 +40,35 @@ exports.follow = async (res, maxf, minf, user) => {
 
 		let following = await elements[2].getText()
 		.then(text => parseInt(text));
-		if(followers > maxf || following < minf) {
-			console.log(`I can't follow ${user.username}!`)
+		if(followers > maxf || following < minf) return console.log(`I can't follow ${user.username}!`);
+
+		try {
+			await res.wait(until.elementLocated(By.className(process.env.BUTTON_FOLLOW_USER_PROFILE)), 4000)
+			.then(element => {
+				element.click();
+				console.log(`Following ${user.username} now!`);
+				return true;
+			});
+		} catch (error) {
+			console.log(`I cant follow ${user.username}`);
 			return false;
 		};
-		await res.wait(until.elementLocated(By.className(process.env.BUTTON_FOLLOW_USER_PROFILE)), 4000)
-		.then(element => {
-			element.click();
-			console.log(`Following ${user.username} now!`);
-		});
 	});
 };
 
 exports.accessUserProfile = async (res, userObj, next, ...args) => {
 	let users = JSON.parse(userObj);
 	let [mf, maxf, minf] = [...args];
-	for (let user of users) {
-		await res.get(user.href);
-		console.log(`Get in user ${user.username}`);
-		try {
-			await res.sleep(4000)
-			.then(async result => {
-				await next(res, maxf, minf, user);
-			});
-		} catch (error) {
-			console.log("I can't follow this profile.");
-			continue;
-		};
+	for (let i=0; i<mf; i++) {
+		let response;
+
+		await res.get(users[i].href);
+		console.log(`Get in user ${users[i].username}`);
+		
+		await res.sleep(4000)
+		.then(async result => {
+			await next(res, maxf, minf, users[i]);
+		});
 	};
 };
 

@@ -6,45 +6,59 @@
 	<link rel="stylesheet" href="./css/bootstrap.css" />
 </head>
 <body class="bg-light">
-	<div class="container">
-		<div class="row mt-5 fullpage">
-			<div class="col col-lg-4 col-sm-12 card">
-				<div id="login-box" style="padding: 20px 20px">
-					<form style="padding: 20px 10px">
-						<h5 class="lead font-weight-bold text-center mb-5">
-							Login Box!
-						</h5>
-						<div class="input-group mb-4">
-							<input 
-								type="text" 
-								class="form-control" 
-								placeholder="Username"
-								autocomplete="username"
-							>
-						</div>
-						<div class="input-group mb-4">
-							<input 
-								type="password" 
-								class="form-control" 
-								placeholder="Password"
-								autocomplete="current-password"
-							>
-						</div>
-						<div class="button-group" style="text-align: center">
-							<button type="button" class="btn btn-raised btn-success">Login</button>
-						</div>
-					</form>
-				</div>
+	<div class="container-fluid">
+		<div class="row mt-5">
+			<div 
+				id="login-box" 
+				style="padding: 20px 20px"
+				class="card col-lg-4 col-md-12 col-xs-12"
+			>
+				<p 
+					class="alert alert-warning" 
+					id="alert-login"
+					style="display: none"
+				>
+				</p>
+				<form style="padding: 20px 10px" onsubmit="holdLogin(event);">
+					<h5 class="lead font-weight-bold text-center mb-5">
+						Login Box!
+					</h5>
+					<div class="input-group mb-4">
+						<input 
+							type="text" 
+							class="form-control" 
+							placeholder="Username"
+							autocomplete="username"
+							onchange="handleLoginChange(event);"
+						>
+					</div>
+					<div class="input-group mb-4">
+						<input 
+							type="password" 
+							class="form-control" 
+							placeholder="Password"
+							autocomplete="current-password"
+							onchange="handleLoginChange(event);"
+						>
+					</div>
+					<div class="button-group" style="text-align: center">
+						<button type="submit" class="btn btn-raised btn-success">Login</button>
+					</div>
+				</form>
 			</div>
 
-			<div class="col col-md-8 card">
+			<div class="col col-lg-8 col-md-12 col-xs-12 card">
 				<div id="options-box" style="padding: 20px 20px">
 					<div class="row">
 						<div class="input-group col-lg-12 mb-3">
 							<h6 class="lead font-weight-bold text-center mb-4" style="width: 100%">
 								Select the operation first!
 							</h6>
-							<select class="custom-select" onchange="handleSelectChange(event);">
+							<select 
+								class="custom-select" 
+								onchange="handleSelectChange(event); handleFormChange(event);"
+								disabled
+							>
 								<option selected>SELECT</option>
 								<option value="target">FOLLOW FROM TARGET USER</option>
 								<option value="hash">FOLLOW FROM HASH PAGE</option>
@@ -53,6 +67,12 @@
 						</div>
 					</div>
 					<div class="row">
+						<p 
+							class="alert alert-warning col-lg-12" 
+							id="alert-select"
+							style="display: none"
+						>
+						</p>
 						<form 
 							id="choosen-option-box" 
 							style="padding: 20px 20px; width: 100%"

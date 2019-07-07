@@ -22,7 +22,8 @@ exports.builder = (username, password) => {
         process.env.BROWSER,
         process.env.BROWSER_VERSION,
         process.env.OS_PLATFORM
-    ).build()
+    )
+    .build()
     .then(async res => {
         await builderAccess(
             res,
@@ -36,10 +37,10 @@ exports.builder = (username, password) => {
     return builder_init;
 };
 
-exports.followTargetFollowers = async (builder, accounts) => {
+exports.followTargetFollowers = async (builder, t, mf, maxf, minf) => {
     await builder.wait(until.titleIs(process.env.IG_TITLE), 5000)
     .then(result => {
-        [...accounts].map(async account => {
+        [...t].map(async account => {
             try {
                 await getUsersFromAccountFollowers(
                     builder,
@@ -52,7 +53,8 @@ exports.followTargetFollowers = async (builder, accounts) => {
                     builder,
                     process.env.DB_TXT,
                     accessUserProfile,
-                    follow
+                    follow,
+                    mf, maxf, minf
                 );
 
                 return { [account]: true };
@@ -61,10 +63,10 @@ exports.followTargetFollowers = async (builder, accounts) => {
     });
 };
 
-exports.followHashesFollowers = async (builder, hashes) => {
+exports.followHashesFollowers = async (builder, t, mf, maxf, minf) => {
     await builder.wait(until.titleIs(process.env.IG_TITLE), 5000)
     .then(result => {
-        [...hashes].map(async hash => {
+        [...t].map(async hash => {
             try {
                 await getUsersFromHashes(
                     builder,
@@ -77,7 +79,8 @@ exports.followHashesFollowers = async (builder, hashes) => {
                     builder,
                     process.env.DB_TXT,
                     accessUserProfile,
-                    follow
+                    follow,
+                    mf, maxf, minf
                 );
                 
                 return {[hash]: true};
@@ -86,15 +89,14 @@ exports.followHashesFollowers = async (builder, hashes) => {
     });
 };
 
-exports.commentHashesPosts = async (builder, hashes, comment) => {
+exports.commentHashesPosts = async (builder, t, mf, maxf, minf) => {
     await builder.wait(until.titleIs(process.env.IG_TITLE), 5000)
     .then(result => {
-        [...hashes].map(async hash => {
+        [...t].map(async hash => {
             try {
                 await getPostsFromHashes(
                     builder,
-                    hash,
-                    comment
+                    hash, mf, maxf, minf
                 );
 
                 return { [hash]: true };

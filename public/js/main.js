@@ -3,7 +3,7 @@ const textModel = {
 		textarea: "Write the target(s) profile(s) to colect users. If more than one target, split them with spaces: target1 target2 target3 targetN.",
 		input_0: "N. Max users to follow per Target",
 		input_1: "N. Max user followers",
-		input_2: "N. Min user followers",
+		input_2: "N. Min user following",
 		name: "target"
 	},
 
@@ -11,7 +11,7 @@ const textModel = {
 		textarea: "Write the tags to colect users. If more than one tag, split them with spaces: tag1 tag2 tag3 tagN.",
 		input_0: "N. Max users to follow per Tag",
 		input_1: "N. Max user followers",
-		input_2: "N. Min user followers",
+		input_2: "N. Min user following",
 		name: "hash"
 	},
 

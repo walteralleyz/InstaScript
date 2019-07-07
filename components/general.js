@@ -2,6 +2,50 @@ const fs = require("fs"),
 { until, By, Key } = require("selenium-webdriver"),
 dotenv = require("dotenv").config();
 
+const treatNumbers = (string_1, string_2) => {
+	let temp_text = [string_1.split(""), string_2.split("")];
+	let num_1, num_2;
+
+	temp_text = [...temp_text].map(x => {
+		let temp_nan = "";
+		[...x].map(y => {
+			if (y == "," || y == ".") {
+				return false;
+			};
+			temp_nan += parseInt(y);
+		});
+		return temp_nan;
+	});
+
+	num_1 = temp_text[0];
+	num_2 = temp_text[1];
+
+	if (num_1.indexOf("NaN") != -1) {
+		num_1 = temp_text[0].replace(/NaN/g, "");
+		num_1 = `${num_1}00`;
+
+		if (num_1.indexOf(",") != -1 || num_1.indexOf(".") != -1) {
+			num_1 = num_1.replace(",", "");
+		};
+
+		num_1 = parseInt(num_1);
+	};
+
+	if (num_2.indexOf("NaN") != -1) {
+		num_2 = temp_text[1].replace(/NaN/g, "");
+		num_2 = `${num_2}00`;
+
+		if (num_2.indexOf(",") != -1 || num_2.indexOf(".") != -1) {
+			num_2 = num_2.replace(",", "");
+		}
+
+		num_2 = parseInt(num_2);
+	};
+
+	temp_text = [num_1, num_2];
+	return temp_text;
+};
+
 exports.readFile = (res, file, func, next, ...args) => {
 	fs.readFile(file, (error, data) => {
 		if(error) return false;
@@ -35,24 +79,31 @@ exports.builderAccess = async (res, username, password, href) => {
 exports.follow = async (res, maxf, minf, user) => {
 	await res.wait(until.elementsLocated(By.className("g47SY")), 3000)
 	.then(async elements => {
-		let followers = await elements[1].getText()
-		.then(text => parseInt(text));
+		let followers = await elements[1].getText();
+		let following = await elements[2].getText();
+		
+		let temp_text = treatNumbers(followers, following);
 
-		let following = await elements[2].getText()
-		.then(text => parseInt(text));
-		if(followers > maxf || following < minf) return console.log(`I can't follow ${user.username}!`);
+		console.log(`
+			followers: ${temp_text[0]}
+			following: ${temp_text[1]}
+		`);
 
-		try {
-			await res.wait(until.elementLocated(By.className(process.env.BUTTON_FOLLOW_USER_PROFILE)), 4000)
-			.then(element => {
-				element.click();
-				console.log(`Following ${user.username} now!`);
-				return true;
-			});
-		} catch (error) {
-			console.log(`I cant follow ${user.username}`);
+		if(maxf < parseInt(temp_text[0]) || minf > parseInt(temp_text[1])) {
+			console.log(`I can't follow ${user.username}`);
 			return false;
 		};
+
+		try {
+			await res.wait(until.elementLocated(By.className(process.env.BUTTON_FOLLOW_USER_PROFILE)), 3000)
+			.then(async button => {
+				await button.click();
+				console.log(`Ǹow Following ${user.username}!`)
+			});
+		} catch(error) {
+			console.log(`I can't follow ${user.username}`);
+			return false;
+		}; 
 	});
 };
 
@@ -60,7 +111,6 @@ exports.accessUserProfile = async (res, userObj, next, ...args) => {
 	let users = JSON.parse(userObj);
 	let [mf, maxf, minf] = [...args];
 	for (let i=0; i<mf; i++) {
-		let response;
 
 		await res.get(users[i].href);
 		console.log(`Get in user ${users[i].username}`);
@@ -70,6 +120,8 @@ exports.accessUserProfile = async (res, userObj, next, ...args) => {
 			await next(res, maxf, minf, users[i]);
 		});
 	};
+
+	res.quit();
 };
 
 exports.controlPhotoSession = async (res, textContent, minLikes, comment) => {

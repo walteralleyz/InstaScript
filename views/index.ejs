@@ -85,5 +85,12 @@
 		</div>
 	</div>
 	<script type="application/javascript" src="./js/main.js"></script>
+	<script>
+		let socket = new WebSocket("ws://localhost:4000");
+
+		socket.onmessage = event => {
+			console.log(event);
+		};
+	</script>
 </body>
 </html>

@@ -12,7 +12,9 @@ const { Builder, until } = require("selenium-webdriver"),
     writeFile,
     builderAccess,
     follow,
-    accessUserProfile
+    accessUserProfile,
+    accessPostHref,
+    comment
 } = require("../components/general"),
 dotenv = require("dotenv").config();
 
@@ -96,7 +98,17 @@ exports.commentHashesPosts = async (builder, t, mf, maxf, minf) => {
             try {
                 await getPostsFromHashes(
                     builder,
-                    hash, mf, maxf, minf
+                    hash,
+                    process.env.DB_TXT,
+                    writeFile
+                );
+
+                await readFile(
+                    builder,
+                    process.env.DB_TXT,
+                    accessPostHref,
+                    comment,
+                    mf, maxf, minf
                 );
 
                 return { [hash]: true };

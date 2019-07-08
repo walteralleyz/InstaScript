@@ -1,7 +1,7 @@
 const fs = require("fs"),
 { until, By, Key } = require("selenium-webdriver"),
 dotenv = require("dotenv").config(),
-{treatNumbers, writeLog, ioSet} = require("./tools");
+{treatNumbers, ioSet} = require("./tools");
 
 exports.readFile = (res, file, func, next, ...args) => {
 	let file_content = fs.readFileSync(file);
@@ -76,27 +76,41 @@ exports.accessUserProfile = async (res, userObj, next, ...args) => {
 	res.quit();
 };
 
-exports.controlPhotoSession = async (res, textContent, minLikes, comment) => {
-	let actual_likes = parseInt(textContent);
-	let expected_likes = parseInt(minLikes);
-
-	if (actual_likes < expected_likes) return false;
-
-	await res.wait(until.elementLocated(By.className("Ypffh")), 3000)
-	.then(textElement => {
-		textElement.click();
-	});
-
-	await res.sleep(2000)
-	.then(result => {
-		res.findElement(By.className("Ypffh"))
+exports.comment = async (res, minLikes, comment) => {
+	try {
+		await res.wait(until.elementLocated(By.className("Ypffh")), 3000)
 		.then(textElement => {
-			textElement.sendKeys(comment, Key.RETURN);
+			textElement.click();
 		});
-	})
+
+		await res.sleep(2000)
+		.then(result => {
+			res.findElement(By.className("Ypffh"))
+			.then(textElement => {
+				textElement.sendKeys(comment, Key.RETURN);
+			});
+		})
+	} catch(error) { resp = false };
 };
 
-exports.postButtonExit = async res => {
-	await res.wait(until.elementLocated(By.className("ckWGn")), 3000)
-	.then(xElement => xElement.click());
+exports.accessPostHref = async (res, postObj, next, ...args) => {
+	let posts = JSON.parse(postObj);
+	let [mf, maxf, minf] = [...args];
+	for (let i = 0; i < mf; i++) {
+		try {
+			await res.sleep(3000)
+			.then(async () => {
+				await res.get(posts[i].href);
+				ioSet(`Get in Post page`);
+
+				await res.sleep(4000)
+				.then(async result => {
+					await next(res, maxf, minf);
+				});
+			});
+		} catch(error) {continue};
+	};
+
+	ioSet("Process Finished!");
+	res.quit();
 };

@@ -1,9 +1,9 @@
 const fs = require("fs"),
-dotenv = require("dotenv").config();
+dotenv = require("dotenv").config(),
+io = require("socket.io-client")(`${process.env.WEBSOCKET_SERVER}:${process.env.PORT}`, {path: "/console"});
 
-exports.writeLog = fileContent => {
-    fs.writeFileSync(process.env.LOG_TXT, fileContent);
-    return true;
+exports.ioSet = message => {
+    io.emit("transport", message);
 };
 
 exports.treatNumbers = (string_1, string_2) => {

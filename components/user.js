@@ -5,7 +5,7 @@ const {
 } = require("selenium-webdriver"),
 dotenv = require("dotenv").config(),
 { controlPhotoSession, postButtonExit } = require("./general"),
-{writeLog} = require("./tools");
+{ioSet} = require("./tools");
 
 exports.getUsersFromAccountFollowers = async (res, account, file, next) => {
 	let user_attr_href = [];
@@ -14,7 +14,7 @@ exports.getUsersFromAccountFollowers = async (res, account, file, next) => {
 	await res.wait(until.elementLocated(By.css("a[href='/" + account + "/followers/']")), 3000)
 	.then(element => {
 		element.click()
-		writeLog("Target profile accessed, receiving followers.");
+		ioSet("Target profile accessed, receiving followers.");
 	});
 
 	await res.wait(until.elementsLocated(By.className(process.env.DIV_PROFILE_FOLLOWER_USERS)), 2000)
@@ -44,6 +44,7 @@ exports.getUsersFromHashes = async (res, hash, file, next) => {
 	await res.get(`${process.env.URL_IG}/explore/tags/${hash}`);
 	await res.wait(until.elementsLocated(By.className("_bz0w")), 3000)
 	.then(async elements => {
+		ioSet("Target Tag accessed, receiving followers!");
 		for (let element of elements) {
 			element.click();
 			await res.wait(until.elementLocated(By.className("FPmhX")), 3000)
@@ -74,6 +75,7 @@ exports.getPostsFromHashes = async (res, hash, numPhotos, minLikes, comment) => 
 	await res.get(`${process.env.URL_IG}/explore/tags/${hash}`);
 	await res.wait(until.elementsLocated(By.className("_bz0w")), 3000)
 	.then(async elements => {
+		ioSet("Target Tag accessed, receiving followers!");
 		for(let element of elements) {
 			await res.sleep(2000)
 			.then(async result => {

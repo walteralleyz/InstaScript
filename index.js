@@ -6,8 +6,8 @@ dotenv = require("dotenv").config(),
 port = process.env.PORT || 2500,
 path = require("path"),
 sessionRouter = require("./routes/main"),
-fs = require("fs"),
-websocket = require("ws");
+socket = require("socket.io"),
+{ stopApp } = require("./controller/main");
 
 app.use(bodyParser.json());
 app.use("/", sessionRouter);
@@ -21,12 +21,17 @@ http = http.createServer(app).listen(app.get("port"),
 	console.log("Listening on port", app.get("port"));
 });
 
-const wss = new websocket.Server({server: http});
+const wss = socket(http, {path: "/console"});
 
 wss.on("connection", client => {
-	fs.watchFile(process.env.LOG_TXT, (curr, prev) => {
-		let file = fs.readFileSync(process.env.LOG_TXT);
-		file = file.toString();
-		client.send(file);
+	client.on("transport", message => {
+		wss.send(message);
+	});
+
+	client.on("eval", message => {
+		if(message == "stop") {
+			let msg = stopApp();
+			wss.send(msg);
+		};
 	});
 });

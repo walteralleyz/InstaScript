@@ -51,7 +51,8 @@
 					<div class="input-group mb-4">
 						<input 
 							type="text" 
-							class="form-control" 
+							class="form-control"
+							id="username"
 							placeholder="Username"
 							autocomplete="username"
 							onchange="handleLoginChange(event);"
@@ -60,14 +61,21 @@
 					<div class="input-group mb-4">
 						<input 
 							type="password" 
-							class="form-control" 
+							class="form-control"
+							id="password"
 							placeholder="Password"
 							autocomplete="current-password"
 							onchange="handleLoginChange(event);"
 						>
 					</div>
 					<div class="button-group" style="text-align: center">
-						<button type="submit" class="btn btn-raised btn-success">Login</button>
+						<button 
+							type="submit"
+							id="submit"
+							class="btn btn-raised btn-success"
+						>
+							Login
+						</button>
 					</div>
 				</form>
 			</div>
@@ -84,11 +92,21 @@
 								onchange="handleSelectChange(event); handleFormChange(event);"
 								disabled
 							>
-								<option selected>SELECT</option>
+								<option selected value="select">SELECT</option>
 								<option value="target">FOLLOW FROM TARGET USER</option>
 								<option value="hash">FOLLOW FROM HASH PAGE</option>
 								<option value="comment">COMMENT FROM HASH PAGE</option>
 							</select>
+							<div class="text-right mt-3" style="width: 100%">
+								<button 
+									id="stop" 
+									class="btn btn-sm btn-warning" 
+									onclick="stopApp();"
+									style="display: none"	
+								>
+									Stop
+								</button>
+							</div>
 						</div>
 					</div>
 					<div class="row">
@@ -125,6 +143,7 @@
 		</div>
 	</div>
 	<script type="application/javascript" src="./js/main.js"></script>
+	<script type="application/javascript" src="./js/socket.io.js"></script>
 	<script type="application/javascript" src="./js/socket.js"></script>
 </body>
 </html>

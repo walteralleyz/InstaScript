@@ -63,3 +63,9 @@ exports.commentFromHashes = async (req, res) => {
 
     res.json({ message: "Running..." });
 };
+
+exports.stopApp = () => {
+    builded.quit();
+    console.log("WebDriver stopped!");
+    return "Process Finished!";
+};

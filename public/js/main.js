@@ -128,6 +128,9 @@ const appendToOptionDiv = obj => {
 
 const handleSelectChange = event => {
 	let select = event.currentTarget;
+	let stop = document.querySelector("#stop");
+	stop.style.display = "none";
+	
 	switch(select.value) {
 		case "target":
 			createTargetField(fieldModel(textModel.target));
@@ -186,7 +189,6 @@ const holdLogin = event => {
 	event.preventDefault();
 	let form = event.currentTarget;
 	let login = document.querySelector("#alert-login");
-	let select = document.querySelector(".custom-select");
 	let [username, password] = [...form];
 	let temp_obj = {
 		username: username.value, 
@@ -197,7 +199,6 @@ const holdLogin = event => {
 		sendData("./access", temp_obj)
 		.then(result => {
 			if(result.error) return false;
-			select.removeAttribute("disabled");
 			return true;
 		});
 		return false;

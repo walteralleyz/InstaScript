@@ -1,7 +1,7 @@
 const fs = require("fs"),
 { until, By, Key } = require("selenium-webdriver"),
 dotenv = require("dotenv").config(),
-{treatNumbers, writeLog} = require("./tools");
+{treatNumbers, writeLog, ioSet} = require("./tools");
 
 exports.readFile = (res, file, func, next, ...args) => {
 	let file_content = fs.readFileSync(file);
@@ -23,7 +23,7 @@ exports.builderAccess = async (res, username, password, href) => {
 		await res.wait(until.elementLocated(By.name(process.env.PASSWORD_INPUT_NAME)), 2500)
 			.then(element => element.sendKeys(password, Key.RETURN));
 
-		writeLog("InstaScript new Session Started!");
+		ioSet("InstaScript new Session Started!");
 	});
 };
 
@@ -35,13 +35,13 @@ exports.follow = async (res, maxf, minf, user) => {
 		
 		let temp_text = treatNumbers(followers, following);
 
-		writeLog(`
+		ioSet(`
 			followers: ${temp_text[0]}
 			following: ${temp_text[1]}
 		`);
 
 		if(maxf < parseInt(temp_text[0]) || minf > parseInt(temp_text[1])) {
-			writeLog(`I can't follow ${user.username}`);
+			ioSet(`I can't follow ${user.username}`);
 			return false;
 		};
 
@@ -49,10 +49,10 @@ exports.follow = async (res, maxf, minf, user) => {
 			await res.wait(until.elementLocated(By.className(process.env.BUTTON_FOLLOW_USER_PROFILE)), 3000)
 			.then(async button => {
 				await button.click();
-				writeLog(`Now Following ${user.username}!`)
+				ioSet(`Now Following ${user.username}!`)
 			});
 		} catch(error) {
-			writeLog(`I can't follow ${user.username}`);
+			ioSet(`I can't follow ${user.username}`);
 			return false;
 		}; 
 	});
@@ -64,7 +64,7 @@ exports.accessUserProfile = async (res, userObj, next, ...args) => {
 	for (let i=0; i<mf; i++) {
 
 		await res.get(users[i].href);
-		writeLog(`Get in user ${users[i].username}`);
+		ioSet(`Get in user ${users[i].username}`);
 		
 		await res.sleep(4000)
 		.then(async result => {
@@ -72,7 +72,7 @@ exports.accessUserProfile = async (res, userObj, next, ...args) => {
 		});
 	};
 
-	writeLog("Process Finished!");
+	ioSet("Process Finished!");
 	res.quit();
 };
 

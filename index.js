@@ -5,8 +5,8 @@ bodyParser = require("body-parser"),
 dotenv = require("dotenv").config(),
 port = process.env.PORT || 2500,
 path = require("path"),
-fs = require("fs"),
 sessionRouter = require("./routes/main"),
+fs = require("fs"),
 websocket = require("ws");
 
 app.use(bodyParser.json());
@@ -18,16 +18,15 @@ app.use(express.static(path.join(__dirname, "./public/")));
 
 http = http.createServer(app).listen(app.get("port"), 
 () => {
-	console.log("Listening on port ", app.get("port"));
+	console.log("Listening on port", app.get("port"));
 });
 
 const wss = new websocket.Server({server: http});
 
-wss.on("connection", (ws) => {
-	fs.watchFile("./log.txt", (curr, prev) => {
-		fs.readFile("./log.txt", (err, data) => {
-			if(err) ws.send("Error!");
-			ws.send(data.toString());
-		});
-	})
+wss.on("connection", client => {
+	fs.watchFile(process.env.LOG_TXT, (curr, prev) => {
+		let file = fs.readFileSync(process.env.LOG_TXT);
+		file = file.toString();
+		client.send(file);
+	});
 });

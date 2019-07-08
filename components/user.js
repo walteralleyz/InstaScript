@@ -5,7 +5,7 @@ const {
 } = require("selenium-webdriver"),
 dotenv = require("dotenv").config(),
 { controlPhotoSession, postButtonExit } = require("./general"),
-{writeLog, logFile} = require("./tools");
+{writeLog} = require("./tools");
 
 exports.getUsersFromAccountFollowers = async (res, account, file, next) => {
 	let user_attr_href = [];
@@ -14,7 +14,7 @@ exports.getUsersFromAccountFollowers = async (res, account, file, next) => {
 	await res.wait(until.elementLocated(By.css("a[href='/" + account + "/followers/']")), 3000)
 	.then(element => {
 		element.click()
-		writeLog(logFile, "Target profile accessed, receiving followers.");
+		writeLog("Target profile accessed, receiving followers.");
 	});
 
 	await res.wait(until.elementsLocated(By.className(process.env.DIV_PROFILE_FOLLOWER_USERS)), 2000)

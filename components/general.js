@@ -1,23 +1,17 @@
 const fs = require("fs"),
 { until, By, Key } = require("selenium-webdriver"),
 dotenv = require("dotenv").config(),
-{writeLog, treatNumbers, logFile} = require("./tools");
+{treatNumbers, writeLog} = require("./tools");
 
 exports.readFile = (res, file, func, next, ...args) => {
-	fs.readFile(file, (error, data) => {
-		if(error) return false;
-		let new_data = data.toString();
-		let [mf, maxf, minf] = [...args];
-		return func(res, new_data, next, mf, maxf, minf);
-	});
+	let file_content = fs.readFileSync(file);
+	file_content = file_content.toString();
+	return func(res, file_content, next, ...args);
 };
 
 exports.writeFile = (file, fileContent) => {
-	fs.writeFile(file, JSON.stringify(fileContent), 
-	error => {
-		if(error) return false;
-		return true;
-	})
+	fs.writeFileSync(file, JSON.stringify(fileContent));
+	return true;
 };
 
 exports.builderAccess = async (res, username, password, href) => {
@@ -29,7 +23,7 @@ exports.builderAccess = async (res, username, password, href) => {
 		await res.wait(until.elementLocated(By.name(process.env.PASSWORD_INPUT_NAME)), 2500)
 			.then(element => element.sendKeys(password, Key.RETURN));
 
-		writeLog(logFile, "InstaScript new Session Started!");
+		writeLog("InstaScript new Session Started!");
 	});
 };
 
@@ -41,13 +35,13 @@ exports.follow = async (res, maxf, minf, user) => {
 		
 		let temp_text = treatNumbers(followers, following);
 
-		writeLog(logFile, `
+		writeLog(`
 			followers: ${temp_text[0]}
 			following: ${temp_text[1]}
 		`);
 
 		if(maxf < parseInt(temp_text[0]) || minf > parseInt(temp_text[1])) {
-			writeLog(logFile, `I can't follow ${user.username}`);
+			writeLog(`I can't follow ${user.username}`);
 			return false;
 		};
 
@@ -55,10 +49,10 @@ exports.follow = async (res, maxf, minf, user) => {
 			await res.wait(until.elementLocated(By.className(process.env.BUTTON_FOLLOW_USER_PROFILE)), 3000)
 			.then(async button => {
 				await button.click();
-				writeLog(logFile, `Ǹow Following ${user.username}!`)
+				writeLog(`Now Following ${user.username}!`)
 			});
 		} catch(error) {
-			writeLog(logFile, `I can't follow ${user.username}`);
+			writeLog(`I can't follow ${user.username}`);
 			return false;
 		}; 
 	});
@@ -70,7 +64,7 @@ exports.accessUserProfile = async (res, userObj, next, ...args) => {
 	for (let i=0; i<mf; i++) {
 
 		await res.get(users[i].href);
-		writeLog(logFile, `Get in user ${users[i].username}`);
+		writeLog(`Get in user ${users[i].username}`);
 		
 		await res.sleep(4000)
 		.then(async result => {
@@ -78,6 +72,7 @@ exports.accessUserProfile = async (res, userObj, next, ...args) => {
 		});
 	};
 
+	writeLog("Process Finished!");
 	res.quit();
 };
 

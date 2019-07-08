@@ -4,9 +4,10 @@ http = require("http"),
 bodyParser = require("body-parser"),
 dotenv = require("dotenv").config(),
 port = process.env.PORT || 2500,
-path = require("path"),	
-sessionRouter = require("./routes/main")
-webSocketServer = require("websocket").server;
+path = require("path"),
+fs = require("fs"),
+sessionRouter = require("./routes/main"),
+websocket = require("ws");
 
 app.use(bodyParser.json());
 app.use("/", sessionRouter);
@@ -20,12 +21,13 @@ http = http.createServer(app).listen(app.get("port"),
 	console.log("Listening on port ", app.get("port"));
 });
 
-const wsServer = new webSocketServer({
-	httpServer: http,
-	autoAcceptConnections: false
-});
+const wss = new websocket.Server({server: http});
 
-wsServer.on("request", (request) => {
-	let connection = request.accept("", request.origin);
-	connection.sendUTF("Ola");
+wss.on("connection", (ws) => {
+	fs.watchFile("./log.txt", (curr, prev) => {
+		fs.readFile("./log.txt", (err, data) => {
+			if(err) ws.send("Error!");
+			ws.send(data.toString());
+		});
+	})
 });

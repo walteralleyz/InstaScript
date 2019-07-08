@@ -1,50 +1,7 @@
 const fs = require("fs"),
 { until, By, Key } = require("selenium-webdriver"),
-dotenv = require("dotenv").config();
-
-const treatNumbers = (string_1, string_2) => {
-	let temp_text = [string_1.split(""), string_2.split("")];
-	let num_1, num_2;
-
-	temp_text = [...temp_text].map(x => {
-		let temp_nan = "";
-		[...x].map(y => {
-			if (y == "," || y == ".") {
-				return false;
-			};
-			temp_nan += parseInt(y);
-		});
-		return temp_nan;
-	});
-
-	num_1 = temp_text[0];
-	num_2 = temp_text[1];
-
-	if (num_1.indexOf("NaN") != -1) {
-		num_1 = temp_text[0].replace(/NaN/g, "");
-		num_1 = `${num_1}00`;
-
-		if (num_1.indexOf(",") != -1 || num_1.indexOf(".") != -1) {
-			num_1 = num_1.replace(",", "");
-		};
-
-		num_1 = parseInt(num_1);
-	};
-
-	if (num_2.indexOf("NaN") != -1) {
-		num_2 = temp_text[1].replace(/NaN/g, "");
-		num_2 = `${num_2}00`;
-
-		if (num_2.indexOf(",") != -1 || num_2.indexOf(".") != -1) {
-			num_2 = num_2.replace(",", "");
-		}
-
-		num_2 = parseInt(num_2);
-	};
-
-	temp_text = [num_1, num_2];
-	return temp_text;
-};
+dotenv = require("dotenv").config(),
+{writeLog, treatNumbers, logFile} = require("./tools");
 
 exports.readFile = (res, file, func, next, ...args) => {
 	fs.readFile(file, (error, data) => {
@@ -72,7 +29,7 @@ exports.builderAccess = async (res, username, password, href) => {
 		await res.wait(until.elementLocated(By.name(process.env.PASSWORD_INPUT_NAME)), 2500)
 			.then(element => element.sendKeys(password, Key.RETURN));
 
-		console.log("InstaScript new Session Started!");
+		writeLog(logFile, "InstaScript new Session Started!");
 	});
 };
 
@@ -84,13 +41,13 @@ exports.follow = async (res, maxf, minf, user) => {
 		
 		let temp_text = treatNumbers(followers, following);
 
-		console.log(`
+		writeLog(logFile, `
 			followers: ${temp_text[0]}
 			following: ${temp_text[1]}
 		`);
 
 		if(maxf < parseInt(temp_text[0]) || minf > parseInt(temp_text[1])) {
-			console.log(`I can't follow ${user.username}`);
+			writeLog(logFile, `I can't follow ${user.username}`);
 			return false;
 		};
 
@@ -98,10 +55,10 @@ exports.follow = async (res, maxf, minf, user) => {
 			await res.wait(until.elementLocated(By.className(process.env.BUTTON_FOLLOW_USER_PROFILE)), 3000)
 			.then(async button => {
 				await button.click();
-				console.log(`Ǹow Following ${user.username}!`)
+				writeLog(logFile, `Ǹow Following ${user.username}!`)
 			});
 		} catch(error) {
-			console.log(`I can't follow ${user.username}`);
+			writeLog(logFile, `I can't follow ${user.username}`);
 			return false;
 		}; 
 	});
@@ -113,7 +70,7 @@ exports.accessUserProfile = async (res, userObj, next, ...args) => {
 	for (let i=0; i<mf; i++) {
 
 		await res.get(users[i].href);
-		console.log(`Get in user ${users[i].username}`);
+		writeLog(logFile, `Get in user ${users[i].username}`);
 		
 		await res.sleep(4000)
 		.then(async result => {

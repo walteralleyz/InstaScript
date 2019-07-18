@@ -40,7 +40,7 @@ const stopApp = () => {
     enableLogin(username, password, button);
 };
 
-const socket = io("http://localhost:2500", {path: "/console"});
+const socket = io("http://192.168.0.27:2500", {path: "/console"});
 
 socket.on("connect", () => {
     let message = builder("InstaScript Ready to use! Please, Login.");

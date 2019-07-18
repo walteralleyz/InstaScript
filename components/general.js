@@ -71,9 +71,6 @@ exports.accessUserProfile = async (res, userObj, next, ...args) => {
 			await next(res, maxf, minf, users[i]);
 		});
 	};
-
-	ioSet("Process Finished!");
-	res.quit();
 };
 
 exports.comment = async (res, minLikes, comment) => {
@@ -110,7 +107,4 @@ exports.accessPostHref = async (res, postObj, next, ...args) => {
 			});
 		} catch(error) {continue};
 	};
-
-	ioSet("Process Finished!");
-	res.quit();
 };
